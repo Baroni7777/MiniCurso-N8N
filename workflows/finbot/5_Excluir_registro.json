@@ -1,0 +1,199 @@
+{
+  "name": "Excluir_registro",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "id"
+            }
+          ]
+        }
+      },
+      "id": "c055762a-8fe7-4141-a639-df2372f30060",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        160,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a3512cd1-7124-432f-85e4-bc96275808cb",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        464,
+        352
+      ],
+      "id": "947c8648-84c0-4e81-911e-81f845307375",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {},
+      "id": "ef805c7f-c8e7-4fb1-b0a2-b98064d9f200",
+      "name": "Replace me with your logic1",
+      "type": "n8n-nodes-base.noOp",
+      "position": [
+        1552,
+        352
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "COLE_AQUI_O_ID_DA_SUA_PLANILHA",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Página1"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "ID",
+              "lookupValue": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        688,
+        352
+      ],
+      "id": "6fe3ce2f-18cb-407b-b8ee-ba7f569f358c",
+      "name": "busca_por_id"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c306140d-d40a-4df5-9e6d-5a82ba5c2bb5",
+              "name": "row_number",
+              "value": "={{ $json.row_number }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        928,
+        352
+      ],
+      "id": "8d3f7862-94e2-4c51-9656-c7c729de2813",
+      "name": "pega_linha"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "documentId": {
+          "__rl": true,
+          "value": "COLE_AQUI_O_ID_DA_SUA_PLANILHA",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Página1"
+        },
+        "startIndex": "={{ $json.row_number }}"
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1184,
+        352
+      ],
+      "id": "1b912a6f-82fa-453b-8a10-f53f22008c0d",
+      "name": "rexclui_linha"
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "busca_por_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "busca_por_id": {
+      "main": [
+        [
+          {
+            "node": "pega_linha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pega_linha": {
+      "main": [
+        [
+          {
+            "node": "rexclui_linha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "rexclui_linha": {
+      "main": [
+        [
+          {
+            "node": "Replace me with your logic1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

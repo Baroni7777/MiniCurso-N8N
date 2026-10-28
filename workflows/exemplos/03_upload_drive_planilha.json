@@ -1,0 +1,189 @@
+{
+  "name": "03 - Upload de arquivo → Google Drive → Planilha",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Envio de trabalhos",
+        "formDescription": "Envie seu arquivo (PDF, imagem, documento).",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Nome",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Arquivo",
+              "fieldType": "file",
+              "multipleFiles": false,
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false,
+          "buttonLabel": "Enviar arquivo"
+        }
+      },
+      "id": "fb2cf442-ccf9-52ea-b19d-be9e3dd08566",
+      "name": "Formulário de envio",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "Arquivo",
+        "name": "={{ $json.Nome }} - {{ $json.Arquivo.filename }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        },
+        "options": {}
+      },
+      "id": "91140834-bf32-572b-a9df-c50f3d82f7b8",
+      "name": "Salvar no Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "11e5e49b-58f2-57af-94c0-10cb71efc7b7",
+              "name": "Data",
+              "value": "={{ $now.format('dd/MM/yyyy HH:mm') }}",
+              "type": "string"
+            },
+            {
+              "id": "b63220c9-7e29-5afa-9f7e-0ea042168f34",
+              "name": "Nome",
+              "value": "={{ $('Formulário de envio').item.json.Nome }}",
+              "type": "string"
+            },
+            {
+              "id": "e3176b95-0f6b-5de5-843d-533cfb95877e",
+              "name": "Arquivo",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "c32695eb-b72a-551c-9b8e-dc7fd7d629b5",
+              "name": "Link",
+              "value": "={{ $json.webViewLink }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e31c4787-7fa4-5986-920f-8dd78fa90511",
+      "name": "Organizar dados",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "COLE_AQUI_O_ID_DA_SUA_PLANILHA",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Arquivos",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "293e5ff0-5dfb-5dcd-8fbb-2aa6ea218ab6",
+      "name": "Registrar na planilha",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        720,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Arquivos também são dados\nO arquivo viaja pelo fluxo como **binário** e cai direto no Google Drive. A planilha guarda o link.",
+        "height": 200,
+        "width": 300,
+        "color": 5
+      },
+      "id": "4587dcaf-8ac4-58c5-8094-838be0f487f9",
+      "name": "Nota 1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        40
+      ]
+    }
+  ],
+  "connections": {
+    "Formulário de envio": {
+      "main": [
+        [
+          {
+            "node": "Salvar no Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Salvar no Drive": {
+      "main": [
+        [
+          {
+            "node": "Organizar dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Organizar dados": {
+      "main": [
+        [
+          {
+            "node": "Registrar na planilha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

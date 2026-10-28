@@ -1,0 +1,333 @@
+{
+  "name": "Verificar_E_avisar",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json['instruções'] }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=Você é o FinBot, assistente de finanças pessoais.\n\nHoje é {{ $now.format('dd/MM/yyyy') }}.\n\nUse as ferramentas para registrar, consultar, editar e apagar\nlançamentos na planilha. \n\nCategorias permitidas: Alimentação,\nTransporte, Lazer, Estudos, Moradia, Outros. Tipo é \"Despesa\"\nou \"Receita\". Antes de apagar, sempre peça confirmação.\n\n\nResponda de forma curta e amigável, em português.\n\n\n\n##REGRAS PARA EXCLUIR\n1. SEMPRE PESSA CONFIRMAÇÃO DO USUARIO"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -80,
+        -176
+      ],
+      "id": "33d869a9-80ca-462c-a2ff-1c340fe56397",
+      "name": "AI Agent",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "description": "chame essa ferramenta para consultar as despesas no geral",
+        "workflowId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "",
+          "cachedResultName": "ESCOLHA AQUI: Consultar_despesas"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "data",
+              "displayName": "data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": true
+            },
+            {
+              "id": "descricao",
+              "displayName": "descricao",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": true
+            },
+            {
+              "id": "categoria",
+              "displayName": "categoria",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": true
+            },
+            {
+              "id": "tipo",
+              "displayName": "tipo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": true
+            },
+            {
+              "id": "valor",
+              "displayName": "valor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        16,
+        144
+      ],
+      "id": "86fb7366-1259-4b56-956b-d8b316f5983c",
+      "name": "consultar registros"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-6-luna",
+          "mode": "list",
+          "cachedResultName": "gpt-6-luna"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -240,
+        260
+      ],
+      "id": "98ae8882-d536-453e-aeab-482ebb9db916",
+      "name": "OpenAI Chat Model"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 0 1 * *"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -800,
+        -176
+      ],
+      "id": "4248d1b8-6aee-4128-b48b-a35a198d8b35",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"assunto\": \"Relatório de despesas — MES DO RELATORIO\",\n\t\"mensagem\": \"Mensagem\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        240,
+        0
+      ],
+      "id": "7ebba2e5-f4c3-43d2-8550-c651a73bf1ca",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Config').item.json.email }}",
+        "subject": "={{ $json.output.assunto }}",
+        "emailType": "text",
+        "message": "={{ $json.output.mensagem }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        -176
+      ],
+      "id": "70a6183d-4b29-4213-94f2-f45542de8f29",
+      "name": "Send a message"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "becef593-9ca8-4a2c-911d-2e9760fa0a5b",
+              "name": "instruções",
+              "value": "Voce deve apenas obsrvar as despesas e gerar um relatório textual para ser enviado via email. este é um relatório mensal, pege tudo que foi gasto este mes e monte o mesmo. nao esqueça nenhuma despesa. ",
+              "type": "string"
+            },
+            {
+              "id": "e172f98c-74c9-4d9f-ae23-307ea7a33e25",
+              "name": "mem",
+              "value": "2",
+              "type": "string"
+            },
+            {
+              "id": "5e750d4f-fd8d-444b-9e00-c515def5f066",
+              "name": "email",
+              "value": "seu-email@gmail.com",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -480,
+        -176
+      ],
+      "id": "b37c0a18-a2f6-4f96-a8a8-7be84e0100f2",
+      "name": "Config"
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        608,
+        -176
+      ],
+      "id": "91577a40-bd2f-429e-a340-f876ba9c0c69",
+      "name": "Copy file",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-3.5-flash",
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "id": "78bd3357-8311-4a83-8bff-9e548a867abd",
+      "name": "OpenRouter Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "consultar registros": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Copy file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

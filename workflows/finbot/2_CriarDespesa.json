@@ -1,0 +1,259 @@
+{
+  "name": "CriarDespesa",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "data"
+            },
+            {
+              "name": "descricao"
+            },
+            {
+              "name": "categoria"
+            },
+            {
+              "name": "tipo"
+            },
+            {
+              "name": "valor"
+            }
+          ]
+        }
+      },
+      "id": "c055762a-8fe7-4141-a639-df2372f30060",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        16,
+        192
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "b5942df6-0160-4ef7-965d-57583acdc8aa",
+      "name": "Replace me with your logic",
+      "type": "n8n-nodes-base.noOp",
+      "position": [
+        1120,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "action": "generate",
+        "encodingType": "hex",
+        "stringLength": 16
+      },
+      "type": "n8n-nodes-base.crypto",
+      "typeVersion": 2,
+      "position": [
+        240,
+        192
+      ],
+      "id": "fd01996e-cd08-417c-9bc7-d3f4ca087fc1",
+      "name": "Crypto"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a3512cd1-7124-432f-85e4-bc96275808cb",
+              "name": "id",
+              "value": "={{ $json.data }}",
+              "type": "string"
+            },
+            {
+              "id": "2f39641a-319a-4874-9049-3dfd3336fd42",
+              "name": "data",
+              "value": "={{ $('When Executed by Another Workflow').item.json.data }}",
+              "type": "string"
+            },
+            {
+              "id": "e2eb7f32-bdb1-4da8-9d99-50cdd362daed",
+              "name": "descricao",
+              "value": "={{ $('When Executed by Another Workflow').item.json.descricao }}",
+              "type": "string"
+            },
+            {
+              "id": "563c59fb-3079-4b98-93fb-b895ffbdc235",
+              "name": "categoria",
+              "value": "={{ $('When Executed by Another Workflow').item.json.categoria }}",
+              "type": "string"
+            },
+            {
+              "id": "2d2ac56c-3ddd-4250-85dd-02e37e61e4d8",
+              "name": "tipo",
+              "value": "={{ $('When Executed by Another Workflow').item.json.tipo }}",
+              "type": "string"
+            },
+            {
+              "id": "c636c906-6f81-42bc-983c-8ba77a42fc7b",
+              "name": "valor",
+              "value": "={{ $('When Executed by Another Workflow').item.json.valor }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        512,
+        192
+      ],
+      "id": "dc141f0a-ce95-4fc1-8bd0-f0ee1022dc64",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "COLE_AQUI_O_ID_DA_SUA_PLANILHA",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Página1"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ $json.id }}",
+            "DATA": "={{ $json.data }}",
+            "DESCRIÇÃO": "={{ $json.descricao }}",
+            "CATEGORIA": "={{ $json.categoria }}",
+            "TIPO": "={{ $json.tipo }}",
+            "VALOR": "={{ $json.valor }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "DATA",
+              "displayName": "DATA",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "DESCRIÇÃO",
+              "displayName": "DESCRIÇÃO",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "CATEGORIA",
+              "displayName": "CATEGORIA",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TIPO",
+              "displayName": "TIPO",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "VALOR",
+              "displayName": "VALOR",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        768,
+        192
+      ],
+      "id": "77ade8c5-113e-4a04-bb46-b56b144028cf",
+      "name": "Append row in sheet"
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Crypto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crypto": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Replace me with your logic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

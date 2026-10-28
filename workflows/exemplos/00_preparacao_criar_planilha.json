@@ -1,0 +1,63 @@
+{
+  "name": "00 - (preparação) Criar planilha dos exemplos",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "3d9130b8-7bdd-580c-a301-c3c8a7640dbc",
+      "name": "Executar uma vez",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "spreadsheet",
+        "title": "Minicurso n8n - Exemplos",
+        "sheetsUi": {
+          "sheetValues": [
+            {
+              "title": "Inscricoes"
+            },
+            {
+              "title": "Arquivos"
+            },
+            {
+              "title": "Contatos"
+            }
+          ]
+        },
+        "options": {
+          "locale": "pt_BR"
+        }
+      },
+      "id": "3c50a82c-1059-5ef4-9bc8-e1596a5b46a9",
+      "name": "Criar planilha",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        240,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Executar uma vez": {
+      "main": [
+        [
+          {
+            "node": "Criar planilha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

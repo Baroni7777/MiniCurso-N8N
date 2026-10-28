@@ -1,0 +1,146 @@
+{
+  "name": "04 - Robô agendado: cotação do dólar por e-mail",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "id": "f6c26b60-6730-59b8-9dcd-754ecd4aabf7",
+      "name": "Todo dia às 8h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.frankfurter.dev/v1/latest?base=USD&symbols=BRL,EUR",
+        "options": {}
+      },
+      "id": "a73db011-1e91-5edc-a45e-a903d611cd5e",
+      "name": "Buscar cotação (API)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "51fe2adc-0479-5848-be09-c6dcf584a896",
+              "name": "dolar",
+              "value": "={{ $json.rates.BRL.toFixed(2) }}",
+              "type": "string"
+            },
+            {
+              "id": "a941b7f6-2513-5331-b86f-01e7f413031a",
+              "name": "euro",
+              "value": "={{ ($json.rates.BRL / $json.rates.EUR).toFixed(2) }}",
+              "type": "string"
+            },
+            {
+              "id": "b6bd8833-acc3-5093-a797-5d08b24d251e",
+              "name": "data",
+              "value": "={{ $json.date }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "833f5f83-420c-5afe-b26a-4e7d3cf316c6",
+      "name": "Montar mensagem",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "seu-email@gmail.com",
+        "subject": "=💵 Dólar hoje: R$ {{ $json.dolar }}",
+        "message": "=<p>Bom dia!</p><p>Cotação de {{ $json.data }}:</p><ul><li>Dólar: <b>R$ {{ $json.dolar }}</b></li><li>Euro: <b>R$ {{ $json.euro }}</b></li></ul><p>Enviado automaticamente pelo n8n 🤖</p>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "7fc81b93-7025-5d08-91b7-c6febc00f07c",
+      "name": "Enviar e-mail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        720,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## API = um site feito para robôs\nEm vez de abrir o site e copiar a cotação, o n8n **pergunta direto** para a API e recebe a resposta em JSON.",
+        "height": 200,
+        "width": 300,
+        "color": 6
+      },
+      "id": "49732aca-dffd-5975-ad4d-1750f19fcedb",
+      "name": "Nota 1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        180,
+        40
+      ]
+    }
+  ],
+  "connections": {
+    "Todo dia às 8h": {
+      "main": [
+        [
+          {
+            "node": "Buscar cotação (API)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar cotação (API)": {
+      "main": [
+        [
+          {
+            "node": "Montar mensagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Montar mensagem": {
+      "main": [
+        [
+          {
+            "node": "Enviar e-mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

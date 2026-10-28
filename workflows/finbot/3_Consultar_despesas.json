@@ -1,0 +1,157 @@
+{
+  "name": "Consultar_despesas",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "data"
+            },
+            {
+              "name": "descricao"
+            },
+            {
+              "name": "categoria"
+            },
+            {
+              "name": "tipo"
+            },
+            {
+              "name": "valor"
+            }
+          ]
+        }
+      },
+      "id": "c388f3e0-705a-425c-82e0-05031afd8d1f",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        -256,
+        96
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a482d7e1-7f0d-4475-9f6e-0a68559085e0",
+      "name": "Replace me with your logic",
+      "type": "n8n-nodes-base.noOp",
+      "position": [
+        704,
+        96
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f39641a-319a-4874-9049-3dfd3336fd42",
+              "name": "data",
+              "value": "={{ $('When Executed by Another Workflow').item.json.data }}",
+              "type": "string"
+            },
+            {
+              "id": "e2eb7f32-bdb1-4da8-9d99-50cdd362daed",
+              "name": "descricao",
+              "value": "={{ $('When Executed by Another Workflow').item.json.descricao }}",
+              "type": "string"
+            },
+            {
+              "id": "563c59fb-3079-4b98-93fb-b895ffbdc235",
+              "name": "categoria",
+              "value": "={{ $('When Executed by Another Workflow').item.json.categoria }}",
+              "type": "string"
+            },
+            {
+              "id": "2d2ac56c-3ddd-4250-85dd-02e37e61e4d8",
+              "name": "tipo",
+              "value": "={{ $('When Executed by Another Workflow').item.json.tipo }}",
+              "type": "string"
+            },
+            {
+              "id": "c636c906-6f81-42bc-983c-8ba77a42fc7b",
+              "name": "valor",
+              "value": "={{ $('When Executed by Another Workflow').item.json.valor }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        32,
+        96
+      ],
+      "id": "1c1d117d-fdf1-4211-8e45-d485e725676e",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "COLE_AQUI_O_ID_DA_SUA_PLANILHA",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Página1"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        336,
+        96
+      ],
+      "id": "24b3ad0b-dd7d-4e8d-8348-a0f833a26f60",
+      "name": "Get row(s) in sheet"
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Replace me with your logic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

@@ -1,0 +1,231 @@
+{
+  "name": "01 - Primeiro fluxo: Aprovado ou Reprovado",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "e70abf05-f828-5e61-be5b-db07961f7a10",
+      "name": "Clique para começar",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2a65ea6c-9aee-501b-972c-b29affdf233a",
+              "name": "nome",
+              "value": "Maria",
+              "type": "string"
+            },
+            {
+              "id": "3cdca8ba-311a-5222-a67b-223e4ea593f8",
+              "name": "nota",
+              "value": "7.5",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6b62ad24-ee3c-5b49-a6a2-c37df8cb9c1a",
+      "name": "Dados do aluno",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2b7c65d6-ad95-5eea-9d3e-041006eae4a6",
+              "leftValue": "={{ $json.nota }}",
+              "rightValue": 6,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "a54149de-5adb-54d6-b40a-8692cde118ea",
+      "name": "Nota maior ou igual a 6?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "96406be6-9d74-593b-9845-5fb36cdb897c",
+              "name": "resultado",
+              "value": "Aprovado",
+              "type": "string"
+            },
+            {
+              "id": "417a482b-0561-5db4-adff-242456611122",
+              "name": "mensagem",
+              "value": "=Parabéns, {{ $json.nome }}! Você foi aprovada com nota {{ $json.nota }}.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "95d07f18-76a1-544f-9dcf-d8dcb9556234",
+      "name": "Aprovado",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        740,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1705bddb-e3bb-5b9e-856a-c2cfa2dc394d",
+              "name": "resultado",
+              "value": "Reprovado",
+              "type": "string"
+            },
+            {
+              "id": "4dbf88d5-3414-59e7-9fdf-82d840792ff2",
+              "name": "mensagem",
+              "value": "={{ $json.nome }}, faltou pouco! Sua nota foi {{ $json.nota }}. Bora pra recuperação?",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "89b45ebe-cbde-5043-9f26-78704a552c20",
+      "name": "Reprovado",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        740,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 1. Gatilho\nTodo fluxo começa com um **gatilho**: o evento que dispara a automação.\nAqui é um clique manual.",
+        "height": 200,
+        "width": 220,
+        "color": 5
+      },
+      "id": "76403c8a-d5c3-5785-94e1-4f179f212494",
+      "name": "Nota 1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        60
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 2. Dados\nO n8n trabalha com **itens** (fichas em JSON). Troque a nota e execute de novo!",
+        "height": 200,
+        "width": 220,
+        "color": 4
+      },
+      "id": "919a3771-4764-57a2-a318-445b2ddbc08d",
+      "name": "Nota 2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        200,
+        60
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 3. Decisão\nO **If** é o \"se... senão\" da automação: cada item segue um caminho.",
+        "height": 200,
+        "width": 220,
+        "color": 6
+      },
+      "id": "41f1316e-d2bc-54ef-9354-2058bae526bc",
+      "name": "Nota 3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        460,
+        60
+      ]
+    }
+  ],
+  "connections": {
+    "Clique para começar": {
+      "main": [
+        [
+          {
+            "node": "Dados do aluno",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dados do aluno": {
+      "main": [
+        [
+          {
+            "node": "Nota maior ou igual a 6?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nota maior ou igual a 6?": {
+      "main": [
+        [
+          {
+            "node": "Aprovado",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reprovado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

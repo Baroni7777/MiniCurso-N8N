@@ -1,0 +1,256 @@
+{
+  "name": "Alterar_registro",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "id"
+            },
+            {
+              "name": "data"
+            },
+            {
+              "name": "descricao"
+            },
+            {
+              "name": "categoria"
+            },
+            {
+              "name": "tipo"
+            },
+            {
+              "name": "valor"
+            }
+          ]
+        }
+      },
+      "id": "298ef530-ad31-4f1b-92e7-e2155e489440",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        -352,
+        -64
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "66714049-5e8b-4dd2-aa23-69a55f92059e",
+      "name": "Replace me with your logic",
+      "type": "n8n-nodes-base.noOp",
+      "position": [
+        752,
+        -64
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a3512cd1-7124-432f-85e4-bc96275808cb",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "2f39641a-319a-4874-9049-3dfd3336fd42",
+              "name": "data",
+              "value": "={{ $('When Executed by Another Workflow').item.json.data }}",
+              "type": "string"
+            },
+            {
+              "id": "e2eb7f32-bdb1-4da8-9d99-50cdd362daed",
+              "name": "descricao",
+              "value": "={{ $('When Executed by Another Workflow').item.json.descricao }}",
+              "type": "string"
+            },
+            {
+              "id": "563c59fb-3079-4b98-93fb-b895ffbdc235",
+              "name": "categoria",
+              "value": "={{ $('When Executed by Another Workflow').item.json.categoria }}",
+              "type": "string"
+            },
+            {
+              "id": "2d2ac56c-3ddd-4250-85dd-02e37e61e4d8",
+              "name": "tipo",
+              "value": "={{ $('When Executed by Another Workflow').item.json.tipo }}",
+              "type": "string"
+            },
+            {
+              "id": "c636c906-6f81-42bc-983c-8ba77a42fc7b",
+              "name": "valor",
+              "value": "={{ $('When Executed by Another Workflow').item.json.valor }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -32,
+        -64
+      ],
+      "id": "f6cf1e93-0085-4347-b346-22af6e62d297",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "COLE_AQUI_O_ID_DA_SUA_PLANILHA",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Página1"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ $json.id }}",
+            "DATA": "={{ $json.data }}",
+            "DESCRIÇÃO": "={{ $json.descricao }}",
+            "CATEGORIA": "={{ $json.categoria }}",
+            "TIPO": "={{ $json.tipo }}",
+            "VALOR": "={{ $json.valor }}"
+          },
+          "matchingColumns": [
+            "ID"
+          ],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "DATA",
+              "displayName": "DATA",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "DESCRIÇÃO",
+              "displayName": "DESCRIÇÃO",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "CATEGORIA",
+              "displayName": "CATEGORIA",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "TIPO",
+              "displayName": "TIPO",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "VALOR",
+              "displayName": "VALOR",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        320,
+        -64
+      ],
+      "id": "df7c0d64-77eb-400f-a7a4-f8828ab478cf",
+      "name": "Update row in sheet"
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Replace me with your logic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

@@ -1,0 +1,327 @@
+{
+  "name": "05 - IA: classificar mensagens de contato (Gemini)",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Fale conosco",
+        "formDescription": "Mande sua mensagem: dúvida, elogio, reclamação ou sugestão.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Nome",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Mensagem",
+              "fieldType": "textarea",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false,
+          "buttonLabel": "Enviar mensagem"
+        }
+      },
+      "id": "85622972-add7-5bff-aaa6-d620db04e931",
+      "name": "Fale conosco",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analise a mensagem de um cliente.\nNome: {{ $json.Nome }}\nMensagem: {{ $json.Mensagem }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "Você faz a triagem do atendimento. Classifique a mensagem em uma categoria (Dúvida, Elogio, Reclamação ou Sugestão), diga o sentimento (Positivo, Neutro ou Negativo), faça um resumo de uma linha e escreva uma resposta curta e educada em português."
+            }
+          ]
+        }
+      },
+      "id": "89f7ec2b-83f5-571b-a32d-9481300c5c29",
+      "name": "IA analisa a mensagem",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        260,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash-lite",
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "id": "3d3ea55d-98a4-509a-a162-dcb272c88cd1",
+      "name": "Gemini",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        200,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"categoria\": \"Reclamação\",\n  \"sentimento\": \"Negativo\",\n  \"resumo\": \"Cliente não recebeu o certificado\",\n  \"resposta\": \"Olá! Sentimos muito...\"\n}"
+      },
+      "id": "5f2696e0-4ef0-5600-9cf5-32c8d6454a85",
+      "name": "Formato da resposta",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        400,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "644b2dfd-b738-5b20-9e7d-83265f3cdae0",
+              "name": "Data",
+              "value": "={{ $now.format('dd/MM/yyyy HH:mm') }}",
+              "type": "string"
+            },
+            {
+              "id": "3c1c4c55-73f8-5c58-89a2-0a857c0bef84",
+              "name": "Nome",
+              "value": "={{ $('Fale conosco').item.json.Nome }}",
+              "type": "string"
+            },
+            {
+              "id": "dee6078f-f07a-51da-b246-5ee21b1826ca",
+              "name": "Mensagem",
+              "value": "={{ $('Fale conosco').item.json.Mensagem }}",
+              "type": "string"
+            },
+            {
+              "id": "8a3c46f8-f660-55a6-9aa8-e2992333bf29",
+              "name": "Categoria",
+              "value": "={{ $json.output.categoria }}",
+              "type": "string"
+            },
+            {
+              "id": "2da39b6e-6cbb-583f-9d63-2f6de66b6482",
+              "name": "Sentimento",
+              "value": "={{ $json.output.sentimento }}",
+              "type": "string"
+            },
+            {
+              "id": "a9afdf84-08c8-5e3c-bd37-eee03623f79f",
+              "name": "Resumo",
+              "value": "={{ $json.output.resumo }}",
+              "type": "string"
+            },
+            {
+              "id": "9c7d558c-54aa-5371-a724-3fcf49da1dc6",
+              "name": "Resposta sugerida",
+              "value": "={{ $json.output.resposta }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7345921b-21f1-50dd-b87a-6e000419336d",
+      "name": "Organizar dados",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        620,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "COLE_AQUI_O_ID_DA_SUA_PLANILHA",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Contatos",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "0799d068-922a-5b13-96fe-3b97ebcee6d7",
+      "name": "Salvar na planilha",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        860,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "35dc07a2-e896-55f0-9e7f-26173091f363",
+              "leftValue": "={{ $('Organizar dados').item.json.Categoria }}",
+              "rightValue": "Reclamação",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "750ae374-5a05-5ac0-9c97-412b8984f82f",
+      "name": "É reclamação?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "seu-email@gmail.com",
+        "subject": "=⚠️ Reclamação de {{ $('Fale conosco').item.json.Nome }}",
+        "message": "=<p><b>Resumo:</b> {{ $('IA analisa a mensagem').item.json.output.resumo }}</p><p><b>Mensagem:</b> {{ $('Fale conosco').item.json.Mensagem }}</p><p><b>Sugestão de resposta:</b> {{ $('IA analisa a mensagem').item.json.output.resposta }}</p>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "13991cf8-de83-518f-ae58-089a6bbaef47",
+      "name": "Alertar responsável",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1340,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## A IA vira um \"funcionário\" do fluxo\nEla lê o texto, classifica e sugere a resposta. O **Formato da resposta** obriga a IA a devolver campos organizados.",
+        "height": 200,
+        "width": 340,
+        "color": 6
+      },
+      "id": "b30f8851-e69f-5e7a-98f0-6ec8fdc880a5",
+      "name": "Nota 1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        180,
+        40
+      ]
+    }
+  ],
+  "connections": {
+    "Fale conosco": {
+      "main": [
+        [
+          {
+            "node": "IA analisa a mensagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "IA analisa a mensagem",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formato da resposta": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "IA analisa a mensagem",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IA analisa a mensagem": {
+      "main": [
+        [
+          {
+            "node": "Organizar dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Organizar dados": {
+      "main": [
+        [
+          {
+            "node": "Salvar na planilha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Salvar na planilha": {
+      "main": [
+        [
+          {
+            "node": "É reclamação?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "É reclamação?": {
+      "main": [
+        [
+          {
+            "node": "Alertar responsável",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

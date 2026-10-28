@@ -1,0 +1,209 @@
+{
+  "name": "02 - Inscrição: Formulário → Planilha → E-mail",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Inscrição - Semana de Informática",
+        "formDescription": "Preencha para receber a confirmação por e-mail.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Nome",
+              "placeholder": "Seu nome completo",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "E-mail",
+              "fieldType": "email",
+              "placeholder": "voce@email.com",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Curso de interesse",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Automação com n8n"
+                  },
+                  {
+                    "option": "Inteligência Artificial"
+                  },
+                  {
+                    "option": "Programação"
+                  },
+                  {
+                    "option": "Design"
+                  }
+                ]
+              },
+              "requiredField": true
+            }
+          ]
+        },
+        "responseMode": "lastNode",
+        "options": {
+          "appendAttribution": false,
+          "buttonLabel": "Enviar inscrição",
+          "respondWithOptions": {
+            "values": {
+              "formSubmittedText": "Inscrição recebida! Confira seu e-mail."
+            }
+          }
+        }
+      },
+      "id": "6d15f49e-da19-5562-9fe0-755f99182d33",
+      "name": "Formulário de inscrição",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        48,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "aae4cf23-0af5-5fcb-8718-6c46e4888488",
+              "name": "Data",
+              "value": "={{ $now.format('dd/MM/yyyy HH:mm') }}",
+              "type": "string"
+            },
+            {
+              "id": "5687cf83-5751-5209-bd56-8639957ee7d4",
+              "name": "Nome",
+              "value": "={{ $json.Nome }}",
+              "type": "string"
+            },
+            {
+              "id": "1af8d212-9f7c-553e-8205-916b954873ba",
+              "name": "E-mail",
+              "value": "={{ $json['E-mail'] }}",
+              "type": "string"
+            },
+            {
+              "id": "890f3beb-ad6b-5165-bbe5-55ac9b20b31f",
+              "name": "Curso",
+              "value": "={{ $json['Curso de interesse'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "38a84639-847c-56a2-94fe-cf90eb98b589",
+      "name": "Organizar dados",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        288,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "COLE_AQUI_O_ID_DA_SUA_PLANILHA",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Inscricoes",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "9b47b2b9-4147-5d45-aa40-1fe8e62694f8",
+      "name": "Salvar na planilha",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        528,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Organizar dados').item.json['E-mail'] }}",
+        "subject": "=Inscrição confirmada: {{ $('Organizar dados').item.json.Curso }}",
+        "message": "=<p>Olá, <b>{{ $('Organizar dados').item.json.Nome }}</b>!</p><p>Sua inscrição em <b>{{ $('Organizar dados').item.json.Curso }}</b> foi registrada em {{ $('Organizar dados').item.json.Data }}.</p><p>Até lá! 🚀</p>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "e790dc79-c6a7-57f5-bb3c-cdf5e800b99d",
+      "name": "Enviar confirmação",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        768,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Antes: 5 min por inscrição\nCopiar do formulário, colar na planilha, escrever o e-mail...\n\n## Depois: 0 min\nO n8n faz tudo em ~3 segundos.",
+        "height": 252,
+        "width": 316,
+        "color": 4
+      },
+      "id": "9cc02d8c-aeee-550c-90a7-e0795041770f",
+      "name": "Nota 1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        48
+      ]
+    }
+  ],
+  "connections": {
+    "Formulário de inscrição": {
+      "main": [
+        [
+          {
+            "node": "Organizar dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Organizar dados": {
+      "main": [
+        [
+          {
+            "node": "Salvar na planilha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Salvar na planilha": {
+      "main": [
+        [
+          {
+            "node": "Enviar confirmação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}
