@@ -2,6 +2,27 @@
 
 Antes de montar qualquer fluxo, o n8n precisa de permissão para usar os seus serviços.
 
+## ⚡ Caminho rápido: n8n Cloud (recomendado)
+
+No **n8n Cloud** você **não precisa configurar nada no Google Cloud Console**: o login do Google já vem pronto (*Managed OAuth*).
+E a memória do agente pode ser a **Simple Memory**, que fica dentro do próprio n8n (sem banco de dados).
+
+**A única chave que você vai precisar é a do Google AI Studio (Gemini).**
+
+| Serviço | No n8n Cloud |
+|---|---|
+| Google Sheets, Drive, Gmail | *Create credential* → escolha o serviço → **Sign in with Google** → marque todas as permissões. Pronto. |
+| Gemini (IA) | Chave de API do AI Studio: https://aistudio.google.com/apikey → *Create API key* → no n8n: *Create credential → Google Gemini (PaLM) API* |
+| Memória do agente | Nó **Simple Memory** ligado no AI Agent (não precisa de credencial) |
+
+> A Simple Memory guarda só as últimas mensagens de cada conversa e é ótima para aprender. Para um projeto de verdade, que precisa lembrar por muito tempo, use Postgres (seção mais abaixo).
+
+---
+
+## Caminho completo: n8n instalado no próprio servidor (self-hosted)
+
+No self-hosted o login do Google não vem pronto: é preciso criar o cliente OAuth no Google Cloud (passo a passo abaixo).
+
 | Serviço | Tipo de credencial | Onde se cria |
 |---|---|---|
 | Google Sheets, Drive, Gmail | OAuth2 (Client ID + Client Secret) | Google Cloud Console (console.cloud.google.com) |
@@ -10,7 +31,7 @@ Antes de montar qualquer fluxo, o n8n precisa de permissão para usar os seus se
 | Memória do agente | Postgres (host, banco, usuário, senha) | neon.tech → projeto → Connect |
 
 > **Atenção:** Sheets, Drive e Gmail **não** usam "chave de API". Só a IA usa chave.
-> No **n8n Cloud** basta clicar em *Sign in with Google* na credencial; o passo a passo abaixo é para quem usa n8n instalado no próprio servidor.
+> OpenRouter e Neon são opcionais: só para quem quiser o FinBot com outro modelo ou memória permanente.
 
 ## Passo a passo do Google Cloud
 

@@ -14,7 +14,7 @@ Aqui está tudo o que você precisa para acompanhar a aula e refazer os exemplos
 | [`guias/04-finbot.md`](guias/04-finbot.md) | Como montar o projeto principal (FinBot) |
 | [`guias/05-ideias-e-desafio.md`](guias/05-ideias-e-desafio.md) | Banco de ideias e o desafio final |
 | [`workflows/exemplos/`](workflows/exemplos) | Exemplos 00 a 05, prontos para importar |
-| [`workflows/finbot/`](workflows/finbot) | Os 6 workflows do FinBot |
+| [`workflows/finbot/`](workflows/finbot) | Os workflows do FinBot (versão n8n Cloud e versão self-hosted) |
 | [`planilhas/`](planilhas) | Modelo da planilha do FinBot (a dos exemplos é criada pelo workflow 00) |
 
 ## 🗺️ Roteiro da aula
@@ -31,10 +31,14 @@ Aqui está tudo o que você precisa para acompanhar a aula e refazer os exemplos
 
 ## 🚀 Começo rápido
 
-1. Faça o [pré-requisito](guias/01-pre-requisitos.md) (principalmente a **verificação em 2 etapas** da conta Google).
+> ⚡ **Use o n8n Cloud** (teste grátis em https://n8n.io): o login do Google já vem pronto (sem configurar o Google Cloud) e o agente usa a **Simple Memory** (sem banco de dados).
+> **A única chave que você vai precisar é a do Google AI Studio:** https://aistudio.google.com/apikey
+
+1. Faça o [pré-requisito](guias/01-pre-requisitos.md): conta Google pessoal, conta no n8n Cloud e chave do AI Studio.
 2. Baixe este repositório: botão verde **Code → Download ZIP**.
 3. No n8n: **⋯ → Import from file** e escolha um arquivo de `workflows/exemplos/`.
-4. Em cada nó com ⚠️, escolha a **sua** credencial e troque `COLE_AQUI_O_ID_DA_SUA_PLANILHA` pelo ID da sua planilha.
+4. Em cada nó com ⚠️, escolha a **sua** credencial (*Sign in with Google*) e troque `COLE_AQUI_O_ID_DA_SUA_PLANILHA` pelo ID da sua planilha.
+5. Para o projeto principal, use `workflows/finbot/1b_FinBot_agente_n8n_cloud.json` (Gemini + Simple Memory). Veja o [guia do FinBot](guias/04-finbot.md).
 
 > Os arquivos **não têm nenhuma credencial**: cada um usa as próprias chaves. Os e-mails de destino estão como `seu-email@gmail.com`; troque pelo seu.
 

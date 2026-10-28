@@ -2,7 +2,7 @@
 
 1. Baixe o repositório (**Code → Download ZIP**) e descompacte.
 2. No n8n, crie um workflow novo → menu **⋯** (canto superior direito) → **Import from file** → escolha o `.json`.
-3. Abra cada nó que mostra ⚠️ e selecione a **sua** credencial (Google Sheets, Drive, Gmail, Gemini...).
+3. Abra cada nó que mostra ⚠️ e selecione a **sua** credencial (Google Sheets, Drive, Gmail, Gemini...). No n8n Cloud, as do Google são só *Sign in with Google*; a única chave a colar é a do Gemini (AI Studio).
 4. Nos nós do Google Sheets, troque `COLE_AQUI_O_ID_DA_SUA_PLANILHA` pelo ID da sua planilha
    (o trecho da URL entre `/d/` e `/edit`).
 5. Nos nós do Gmail, troque `seu-email@gmail.com` pelo seu e-mail.
